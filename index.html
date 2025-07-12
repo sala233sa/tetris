@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tetris Offline</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #222;
+      color: white;
+      font-family: Arial;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background: #111;
+      border: 2px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="tetris" width="240" height="400"></canvas>
+
+  <script>
+    // Configuración inicial
+    const canvas = document.getElementById('tetris');
+    const ctx = canvas.getContext('2d');
+    const scale = 20;
+    ctx.scale(scale, scale);
+
+    // Prevención de recarga con teclas
+    document.addEventListener('keydown', function(e) {
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+        e.preventDefault();
+        if (!gameOver && !isPaused) {
+          switch(e.key) {
+            case 'ArrowLeft': move(-1); break;
+            case 'ArrowRight': move(1); break;
+            case 'ArrowDown': fastDrop = true; break;
+            case 'ArrowUp': case ' ': rotatePiece(); break;
+          }
+        }
+      }
+    }, true);
+
+    // [Aquí va el resto del código del juego...]
+    let arena = createMatrix(12, 20);
+    let gameOver = false;
+    let isPaused = false;
+    
+    function createMatrix(w, h) {
+      const matrix = [];
+      while (h--) matrix.push(new Array(w).fill(0));
+      return matrix;
+    }
+    
+    function draw() {
+      ctx.fillStyle = '#111';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar pieza actual
+      if (currentPiece) {
+        drawMatrix(currentPiece.shape, currentPiece, currentPiece.type);
+      }
+    }
+    
+    // [Añade aquí las demás funciones del juego]
+
+    // Registro del Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registrado'))
+        .catch(err => console.log('Error SW:', err));
+    }
+  </script>
+</body>
+</html>
